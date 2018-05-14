@@ -24,9 +24,13 @@ exports.default = {
         index: ['./src/index.js']
     },
 
-    js: ['jsx'],
+    // js: ['jsx'],
 
-    css: ['sass'],
+    // css: ['sass'],
+
+    eslint: false,
+
+    assets: ['jpg', 'jpeg', 'png', 'gif', 'mp3', 'ttf', 'woff', 'woff2', 'eot', 'svg'],
 
     html: {
         index: {

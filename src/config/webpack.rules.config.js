@@ -1,6 +1,9 @@
+import { existsSync } from 'fs';
+import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import getExistConfigPath from '../util/existConfig';
 
-export function getJsRule(packConfig, env) {
+export function getJSRule(packConfig, env) {
     const {
         eslint
     } = packConfig;
@@ -24,61 +27,104 @@ export function getJsRule(packConfig, env) {
     return rule;
 }
 
-export default function getRules(packConfig, env) {
+export function getCSSRule(packConfig, env) {
     const {
-        js,
-        css
+        CONTEXT,
+        css,
+        postcss
     } = packConfig;
 
-    const rules = [
-        getJsRule(packConfig, env),
+    const cssOption = {
+        ...css,
+        ...env === 'prd' ? {
+            minimize: { minifyFontValues: false }
+        } : {}
+    };
+
+    let postcssOption;
+    if (postcss) {
+        postcssOption = typeof postcss === 'object' ? postcss : {};
+
+        if (!(postcss.config &&
+            typeof postcss.config.path === 'string' &&
+            existsSync(path.resolve(CONTEXT, postcss.config.path)))) {
+            postcssOption.config = postcss.config || {};
+            postcssOption.config.path = getExistConfigPath('postcss', CONTEXT) || getExistConfigPath('postcss', __dirname);
+        }
+    }
+
+    const rule = [
         {
-            test: /\.(css|scss)$/,
+            test: /\.css$/i,
             use: [
                 env === 'prd' ? MiniCssExtractPlugin.loader : 'style-loader',
-                'css-loader',
+                {
+                    loader: 'css-loader',
+                    options: cssOption
+                },
+                ...postcss ? [{
+                    loader: 'postcss-loader',
+                    options: postcssOption
+                }] : []
+            ]
+        },
+        {
+            test: /\.(scss|sass)$/i,
+            use: [
+                env === 'prd' ? MiniCssExtractPlugin.loader : 'style-loader',
+                {
+                    loader: 'css-loader',
+                    options: cssOption
+                },
+                ...postcss ? [{
+                    loader: 'postcss-loader',
+                    options: postcssOption
+                }] : [],
                 'sass-loader'
-            ],
-            exclude: /node_modules/
-        },
-        {
-            test: /\.(png|jpg|gif)$/,
-            use: [
-                {
-                    loader: 'url-loader',
-                    options: {
-                        limit: 8192,
-                        name: 'images/[name].[ext]'
-                    }
-                }
             ]
         },
         {
-            test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            test: /\.less$/i,
             use: [
+                env === 'prd' ? MiniCssExtractPlugin.loader : 'style-loader',
                 {
-                    loader: 'url-loader',
-                    options: {
-                        limit: 8192,
-                        mimetype: 'application/font-woff',
-                        name: 'fonts/[name].[ext]'
-                    }
-                }
-            ]
-        },
-        {
-            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            use: [
-                {
-                    loader: 'file-loader',
-                    options: {
-                        limit: 8192,
-                        mimetype: 'application/font-woff',
-                        name: 'fonts/[name].[ext]'
-                    }
-                }
+                    loader: 'css-loader',
+                    options: cssOption
+                },
+                ...postcss ? [{
+                    loader: 'postcss-loader',
+                    options: postcssOption
+                }] : [],
+                'less-loader'
             ]
         }
+    ];
+
+    return rule;
+}
+
+// TODO: different asset has different public path
+export function getAssetsRule(packConfig, env) {
+    const {
+        assets
+    } = packConfig;
+    const rule = {
+        test: new RegExp(`.(${assets.join('|')})$`, 'i'),
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]'
+        }
+    }
+
+    return rule;
+}
+
+export default function getRules(packConfig, env) {
+
+    const rules = [
+        getJSRule(packConfig, env),
+        ...getCSSRule(packConfig, env),
+        getAssetsRule(packConfig, env)
     ];
 
     return rules;

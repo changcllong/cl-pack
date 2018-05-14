@@ -48,7 +48,6 @@ var webpackConfig = (0, _projectConfig2.default)('webpack.dev.config.js', packCo
 var complier = (0, _webpack2.default)(webpackConfig);
 
 var webpackDevOptions = {
-    contentBase: _path2.default.resolve(context, './template'),
     quiet: false,
     noInfo: false,
     hot: true,
