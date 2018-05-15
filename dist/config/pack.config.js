@@ -15,7 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = {
     CONTEXT: (0, _path.getContext)(),
     path: './dist',
-    publicPath: 'http://localhost:8080/assets/',
+    publicPath: 'http://localhost:8080/',
 
     filename: '[name].js',
     chunkFilename: '[name].js',
@@ -52,7 +52,15 @@ exports.default = {
         port: 8080,
         hot: true,
         staticPath: './assets',
-        mockPath: './mock'
+        proxy: {
+            '^/index0$': 'http://localhost:8080/index.html',
+            '^/index1$': '/index.html'
+        },
+
+        mock: {
+            '^/api0$': { from: 'changcllong', message: 'Hello World' },
+            '^/api1$': './mock/data.json'
+        }
     },
 
     prd: {
