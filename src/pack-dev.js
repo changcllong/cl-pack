@@ -1,5 +1,6 @@
 import path from 'path';
 import url from 'url';
+import { isObject } from 'util';
 import express from 'express';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -53,7 +54,7 @@ devMiddleware.waitUntilValid(() => {
 
 function proxyMiddleware(req, res, next) {
     const rules = [];
-    if (typeof proxy === 'object') {
+    if (isObject(proxy)) {
         Object.keys(proxy).forEach(from => {
             rules.push({
                 from: from,
@@ -104,7 +105,7 @@ function mockMiddleware(req, res, next) {
             const resData = mock[from];
 
             res.setHeader('Content-Type', 'application/json');
-            if (typeof resData === 'object') {
+            if (isObject(resData)) {
                 res.end(JSON.stringify(resData));
             } else {
                 const data = requireUncached(path.resolve(context, resData));
@@ -115,7 +116,7 @@ function mockMiddleware(req, res, next) {
         return false;
     }
 
-    if (!(typeof mock === 'object' && Object.keys(mock).some(existMockData))) {
+    if (!(isObject(mock) && Object.keys(mock).some(existMockData))) {
         next();
     }
 }

@@ -1,6 +1,10 @@
+import path from 'path';
+import { isObject } from 'util';
+import { existsSync } from 'fs';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import path from 'path';
+import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
+import getExistConfigPath from '../util/existConfig';
 
 export default (packConfig) => {
     const {
@@ -12,7 +16,8 @@ export default (packConfig) => {
         entry,
         commonChunks,
         runtimeChunk,
-        html
+        html,
+        stylelint
     } = packConfig;
 
     const webpackConfig = {
@@ -63,6 +68,18 @@ export default (packConfig) => {
     webpackConfig.plugins = [
         new CleanWebpackPlugin([path.resolve(CONTEXT, _path)], { verbose: false })
     ];
+
+    if (stylelint) {
+        const stylelintOptions = {
+            context: path.resolve(CONTEXT, 'src'),
+            ...isObject(stylelint) ? stylelint : {},
+        };
+        if (!(stylelintOptions.configFile && existsSync(stylelintOptions.configFile))) {
+            stylelintOptions.configFile = getExistConfigPath('stylelint', CONTEXT) || getExistConfigPath('stylelint', __dirname);
+        }
+
+        webpackConfig.plugins.push(new StylelintWebpackPlugin(stylelintOptions));
+    }
 
     Object.keys(html).forEach(name => {
         webpackConfig.plugins.push(new HtmlWebpackPlugin({

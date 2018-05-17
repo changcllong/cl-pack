@@ -1,7 +1,5 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
@@ -9,6 +7,8 @@ var _path2 = _interopRequireDefault(_path);
 var _url = require('url');
 
 var _url2 = _interopRequireDefault(_url);
+
+var _util = require('util');
 
 var _express = require('express');
 
@@ -88,7 +88,7 @@ devMiddleware.waitUntilValid(function () {
 
 function proxyMiddleware(req, res, next) {
     var rules = [];
-    if ((typeof proxy === 'undefined' ? 'undefined' : _typeof(proxy)) === 'object') {
+    if ((0, _util.isObject)(proxy)) {
         Object.keys(proxy).forEach(function (from) {
             rules.push({
                 from: from,
@@ -139,7 +139,7 @@ function mockMiddleware(req, res, next) {
             var resData = mock[from];
 
             res.setHeader('Content-Type', 'application/json');
-            if ((typeof resData === 'undefined' ? 'undefined' : _typeof(resData)) === 'object') {
+            if ((0, _util.isObject)(resData)) {
                 res.end(JSON.stringify(resData));
             } else {
                 var data = (0, _requireUncached2.default)(_path2.default.resolve(context, resData));
@@ -150,7 +150,7 @@ function mockMiddleware(req, res, next) {
         return false;
     }
 
-    if (!((typeof mock === 'undefined' ? 'undefined' : _typeof(mock)) === 'object' && Object.keys(mock).some(existMockData))) {
+    if (!((0, _util.isObject)(mock) && Object.keys(mock).some(existMockData))) {
         next();
     }
 }

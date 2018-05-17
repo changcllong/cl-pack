@@ -11,6 +11,8 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _util = require('util');
+
 var _path3 = require('./path');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -19,7 +21,7 @@ function getProjectConfig(configName, packConfig) {
     var defaultConfig = require(_path2.default.join('../config', configName));
     defaultConfig = defaultConfig.default || defaultConfig;
 
-    if (typeof defaultConfig === 'function') {
+    if ((0, _util.isFunction)(defaultConfig)) {
         defaultConfig = defaultConfig(packConfig);
     }
 
@@ -30,7 +32,7 @@ function getProjectConfig(configName, packConfig) {
         var projectConfig = require(configInProject);
         projectConfig = projectConfig.default || projectConfig;
 
-        return typeof projectConfig === 'function' ? projectConfig(defaultConfig, packConfig) : projectConfig;
+        return (0, _util.isFunction)(projectConfig) ? projectConfig(defaultConfig, packConfig) : projectConfig;
     }
 
     return defaultConfig;

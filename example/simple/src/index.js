@@ -1,4 +1,5 @@
-import EXAMPLE from './a';
+import EXAMPLE from './simple';
+import './style.scss';
 
 const app = document.getElementById('app');
 

@@ -13,7 +13,7 @@ var _fs = require('fs');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function getExistConfigPath(name, dir) {
+function getExistConfigPath(filename, dir) {
     var names = ['.' + filename + 'rc.js', '.' + filename + 'rc', filename + '.config.js'];
     var configPath = void 0;
     for (var i = 0; i < names.length; i++) {

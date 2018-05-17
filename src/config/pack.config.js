@@ -1,5 +1,4 @@
 import { getContext } from '../util/path';
-import path from 'path';
 
 export default {
     CONTEXT: getContext(),
@@ -13,24 +12,15 @@ export default {
         index: ['./src/index.js']
     },
 
-    // js: ['jsx'],
-
-    // css: ['sass'],
+    stylelint: {
+        files: ['**/*.css', '**/*.less', '**/*.s?(a|c)ss']
+    },
 
     eslint: false,
 
-    assets: [
-        'jpg',
-        'jpeg',
-        'png',
-        'gif',
-        'mp3',
-        'ttf',
-        'woff',
-        'woff2',
-        'eot',
-        'svg'
-    ],
+    assets: {
+        'jpg|jpeg|png|gif|mp3|ttf|woff|woff2|eot|svg': {}
+    },
 
     html: {
         index: {
@@ -42,10 +32,6 @@ export default {
     runtimeChunk: false,
 
     commonChunks: {
-        // vendor: [
-        //     'react',
-        //     'react-dom'
-        // ]
     },
 
     dev: {

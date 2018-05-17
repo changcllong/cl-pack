@@ -1,4 +1,5 @@
 import { existsSync } from 'fs';
+import { isString, isObject } from 'util';
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import getExistConfigPath from '../util/existConfig';
@@ -18,7 +19,7 @@ export function getJSRule(packConfig, env) {
         const eslintRule = {
             loader: 'eslint-loader'
         }
-        if (typeof eslint === 'object') {
+        if (isObject(eslint)) {
             eslintRule.options = eslint;
         }
         rule.use.push(eslintRule);
@@ -43,17 +44,17 @@ export function getCSSRule(packConfig, env) {
 
     let postcssOption;
     if (postcss) {
-        postcssOption = typeof postcss === 'object' ? postcss : {};
+        postcssOption = isObject(postcss) ? postcss : {};
 
         if (!(postcss.config &&
-            typeof postcss.config.path === 'string' &&
+            isString(postcss.config.path) &&
             existsSync(path.resolve(CONTEXT, postcss.config.path)))) {
             postcssOption.config = postcss.config || {};
             postcssOption.config.path = getExistConfigPath('postcss', CONTEXT) || getExistConfigPath('postcss', __dirname);
         }
     }
 
-    const rule = [
+    const rules = [
         {
             test: /\.css$/i,
             use: [
@@ -100,23 +101,30 @@ export function getCSSRule(packConfig, env) {
         }
     ];
 
-    return rule;
+    return rules;
 }
 
-// TODO: different asset has different public path
 export function getAssetsRule(packConfig, env) {
     const {
         assets
     } = packConfig;
-    const rule = {
-        test: new RegExp(`.(${assets.join('|')})$`, 'i'),
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]'
-        }
+    const rules = [];
+
+    if (isObject(assets)) {
+        Object.keys(assets).forEach(asset => {
+            const options = isObject(assets[asset]) ? assets[asset] : {};
+            if (!options.name) {
+                options.name = env === 'prd' ? '[path][name]@[hash].[ext]' : '[path][name].[ext]';
+            }
+            rules.push({
+                test: new RegExp(`.(${asset})$`, 'i'),
+                loader: 'file-loader',
+                options
+            });
+        });
     }
 
-    return rule;
+    return rules;
 }
 
 export default function getRules(packConfig, env) {
@@ -124,7 +132,7 @@ export default function getRules(packConfig, env) {
     const rules = [
         getJSRule(packConfig, env),
         ...getCSSRule(packConfig, env),
-        getAssetsRule(packConfig, env)
+        ...getAssetsRule(packConfig, env)
     ];
 
     return rules;

@@ -1,12 +1,13 @@
 import { existsSync } from 'fs';
 import path from 'path';
+import { isFunction } from 'util';
 import { getContext } from './path';
 
 export default function getProjectConfig(configName, packConfig) {
     let defaultConfig = require(path.join('../config', configName));
     defaultConfig = defaultConfig.default || defaultConfig;
 
-    if (typeof defaultConfig === 'function') {
+    if (isFunction(defaultConfig)) {
         defaultConfig = defaultConfig(packConfig);
     }
 
@@ -17,7 +18,7 @@ export default function getProjectConfig(configName, packConfig) {
         let projectConfig = require(configInProject);
         projectConfig = projectConfig.default || projectConfig;
 
-        return typeof projectConfig === 'function' ?
+        return isFunction(projectConfig) ?
             projectConfig(defaultConfig, packConfig) :
             projectConfig;
     }

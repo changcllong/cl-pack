@@ -6,14 +6,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 exports.getJSRule = getJSRule;
 exports.getCSSRule = getCSSRule;
 exports.getAssetsRule = getAssetsRule;
 exports.default = getRules;
 
 var _fs = require('fs');
+
+var _util = require('util');
 
 var _path = require('path');
 
@@ -43,7 +43,7 @@ function getJSRule(packConfig, env) {
         var eslintRule = {
             loader: 'eslint-loader'
         };
-        if ((typeof eslint === 'undefined' ? 'undefined' : _typeof(eslint)) === 'object') {
+        if ((0, _util.isObject)(eslint)) {
             eslintRule.options = eslint;
         }
         rule.use.push(eslintRule);
@@ -64,15 +64,15 @@ function getCSSRule(packConfig, env) {
 
     var postcssOption = void 0;
     if (postcss) {
-        postcssOption = (typeof postcss === 'undefined' ? 'undefined' : _typeof(postcss)) === 'object' ? postcss : {};
+        postcssOption = (0, _util.isObject)(postcss) ? postcss : {};
 
-        if (!(postcss.config && typeof postcss.config.path === 'string' && (0, _fs.existsSync)(_path2.default.resolve(CONTEXT, postcss.config.path)))) {
+        if (!(postcss.config && (0, _util.isString)(postcss.config.path) && (0, _fs.existsSync)(_path2.default.resolve(CONTEXT, postcss.config.path)))) {
             postcssOption.config = postcss.config || {};
             postcssOption.config.path = (0, _existConfig2.default)('postcss', CONTEXT) || (0, _existConfig2.default)('postcss', __dirname);
         }
     }
 
-    var rule = [{
+    var rules = [{
         test: /\.css$/i,
         use: [env === 'prd' ? _miniCssExtractPlugin2.default.loader : 'style-loader', {
             loader: 'css-loader',
@@ -101,27 +101,34 @@ function getCSSRule(packConfig, env) {
         }] : []), ['less-loader'])
     }];
 
-    return rule;
+    return rules;
 }
 
-// TODO: different asset has different public path
 function getAssetsRule(packConfig, env) {
     var assets = packConfig.assets;
 
-    var rule = {
-        test: new RegExp('.(' + assets.join('|') + ')$', 'i'),
-        loader: 'file-loader',
-        options: {
-            name: '[name].[ext]'
-        }
-    };
+    var rules = [];
 
-    return rule;
+    if ((0, _util.isObject)(assets)) {
+        Object.keys(assets).forEach(function (asset) {
+            var options = (0, _util.isObject)(assets[asset]) ? assets[asset] : {};
+            if (!options.name) {
+                options.name = env === 'prd' ? '[path][name]@[hash].[ext]' : '[path][name].[ext]';
+            }
+            rules.push({
+                test: new RegExp('.(' + asset + ')$', 'i'),
+                loader: 'file-loader',
+                options: options
+            });
+        });
+    }
+
+    return rules;
 }
 
 function getRules(packConfig, env) {
 
-    var rules = [getJSRule(packConfig, env)].concat(_toConsumableArray(getCSSRule(packConfig, env)), [getAssetsRule(packConfig, env)]);
+    var rules = [getJSRule(packConfig, env)].concat(_toConsumableArray(getCSSRule(packConfig, env)), _toConsumableArray(getAssetsRule(packConfig, env)));
 
     return rules;
 }

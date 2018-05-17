@@ -4,6 +4,16 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _path2 = require('path');
+
+var _path3 = _interopRequireDefault(_path2);
+
+var _util = require('util');
+
+var _fs = require('fs');
+
 var _cleanWebpackPlugin = require('clean-webpack-plugin');
 
 var _cleanWebpackPlugin2 = _interopRequireDefault(_cleanWebpackPlugin);
@@ -12,9 +22,13 @@ var _htmlWebpackPlugin = require('html-webpack-plugin');
 
 var _htmlWebpackPlugin2 = _interopRequireDefault(_htmlWebpackPlugin);
 
-var _path2 = require('path');
+var _stylelintWebpackPlugin = require('stylelint-webpack-plugin');
 
-var _path3 = _interopRequireDefault(_path2);
+var _stylelintWebpackPlugin2 = _interopRequireDefault(_stylelintWebpackPlugin);
+
+var _existConfig = require('../util/existConfig');
+
+var _existConfig2 = _interopRequireDefault(_existConfig);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27,7 +41,8 @@ exports.default = function (packConfig) {
         entry = packConfig.entry,
         commonChunks = packConfig.commonChunks,
         runtimeChunk = packConfig.runtimeChunk,
-        html = packConfig.html;
+        html = packConfig.html,
+        stylelint = packConfig.stylelint;
 
 
     var webpackConfig = {
@@ -76,6 +91,17 @@ exports.default = function (packConfig) {
     };
 
     webpackConfig.plugins = [new _cleanWebpackPlugin2.default([_path3.default.resolve(CONTEXT, _path)], { verbose: false })];
+
+    if (stylelint) {
+        var stylelintOptions = _extends({
+            context: _path3.default.resolve(CONTEXT, 'src')
+        }, (0, _util.isObject)(stylelint) ? stylelint : {});
+        if (!(stylelintOptions.configFile && (0, _fs.existsSync)(stylelintOptions.configFile))) {
+            stylelintOptions.configFile = (0, _existConfig2.default)('stylelint', CONTEXT) || (0, _existConfig2.default)('stylelint', __dirname);
+        }
+
+        webpackConfig.plugins.push(new _stylelintWebpackPlugin2.default(stylelintOptions));
+    }
 
     Object.keys(html).forEach(function (name) {
         webpackConfig.plugins.push(new _htmlWebpackPlugin2.default({

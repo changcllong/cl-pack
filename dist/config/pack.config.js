@@ -6,12 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _path = require('../util/path');
 
-var _path2 = require('path');
-
-var _path3 = _interopRequireDefault(_path2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 exports.default = {
     CONTEXT: (0, _path.getContext)(),
     path: './dist',
@@ -24,13 +18,15 @@ exports.default = {
         index: ['./src/index.js']
     },
 
-    // js: ['jsx'],
-
-    // css: ['sass'],
+    stylelint: {
+        files: ['**/*.css', '**/*.less', '**/*.s?(a|c)ss']
+    },
 
     eslint: false,
 
-    assets: ['jpg', 'jpeg', 'png', 'gif', 'mp3', 'ttf', 'woff', 'woff2', 'eot', 'svg'],
+    assets: {
+        'jpg|jpeg|png|gif|mp3|ttf|woff|woff2|eot|svg': {}
+    },
 
     html: {
         index: {
@@ -41,12 +37,7 @@ exports.default = {
 
     runtimeChunk: false,
 
-    commonChunks: {
-        // vendor: [
-        //     'react',
-        //     'react-dom'
-        // ]
-    },
+    commonChunks: {},
 
     dev: {
         port: 8080,
