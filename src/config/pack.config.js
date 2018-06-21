@@ -24,8 +24,7 @@ export default {
 
     html: {
         index: {
-            template: 'template/index.html',
-            chunks: ['index']
+            template: 'template/index.html'
         }
     },
 
@@ -34,21 +33,21 @@ export default {
     commonChunks: {
     },
 
+    visualizer: false,
+
     dev: {
         port: 8080,
         hot: true,
         staticPath: './assets',
         proxy: {
-            '^/index0$': 'http://localhost:8080/index.html',
-            '^/index1$': '/index.html'
+            // '^/index0$': 'http://localhost:8080/index.html',
+            // '^/index1$': '/index.html'
         },
 
         mock: {
-            '^/api0$': {from: 'changcllong', message: 'Hello World'},
-            '^/api1$': './mock/data.json'
-        },
-
-        visualizer: false
+            // '^/api0$': {from: 'changcllong', message: 'Hello World'},
+            // '^/api1$': './mock/data.json'
+        }
     },
 
     prd: {
@@ -63,8 +62,6 @@ export default {
                 sourceMap: false
             },
             css: {}
-        },
-
-        visualizer: false
+        }
     }
 };

@@ -1,8 +1,9 @@
-'use strict';
+#!/usr/bin/env node
 
 import path from 'path';
 import url from 'url';
 import { isObject } from 'util';
+import program from 'commander';
 import express from 'express';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -10,6 +11,10 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import httpProxyMiddleware from 'http-proxy-middleware';
 
 process.env.NODE_ENV = 'development';
+
+program
+    .option('-p, --port <port>', 'server listen port')
+    .parse(process.argv);
 
 import getProjectConfig from './util/projectConfig';
 import requireUncached from './util/requireUncached';
@@ -129,4 +134,9 @@ function mockMiddleware(req, res, next) {
 app.use(mockMiddleware);
 
 app.use(express.static(path.resolve(context, staticPath)));
-app.listen(port);
+
+if(program.port) {
+    app.listen(program.port);
+} else {
+    app.listen(port);
+}

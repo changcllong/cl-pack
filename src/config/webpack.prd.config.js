@@ -18,8 +18,6 @@ export default (packConfig) => {
         minimizer
     } = packConfig;
 
-    console.log(cssFilename);
-
     webpackConfig.mode = 'production';
 
     webpackConfig.module.rules = getRules(packConfig, 'prd');
@@ -30,8 +28,7 @@ export default (packConfig) => {
 
     webpackConfig.plugins.push(
         new MiniCssExtractPlugin({
-            filename: cssFilename,
-            // chunkFilename: "[name].chunk@[contenthash].css"
+            filename: cssFilename
         })
     );
 

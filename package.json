@@ -1,7 +1,7 @@
 {
   "name": "cl-pack",
-  "version": "1.0.0",
-  "description": "a packing tool ",
+  "version": "0.0.1",
+  "description": "A packing tool based on webpack4",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,11 +15,20 @@
     "webpack4",
     "packing"
   ],
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "cl-pack": "dist/index.js",
+    "cl-pack-dev": "dist/pack-dev.js",
+    "cl-pack-build": "dist/pack.js"
+  },
   "author": "cl",
   "license": "ISC",
   "dependencies": {
     "chalk": "^2.4.1",
     "clean-webpack-plugin": "^0.1.19",
+    "commander": "^2.15.1",
     "css-loader": "^0.28.11",
     "express": "^4.16.3",
     "file-loader": "^1.1.11",
@@ -45,8 +54,12 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "rimraf": "^2.6.2"
   }
 }

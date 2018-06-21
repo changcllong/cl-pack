@@ -3,6 +3,7 @@ import { isObject } from 'util';
 import { existsSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
+import WebpackVisualizerPlugin from 'webpack-visualizer-plugin';
 import getExistConfigPath from '../util/existConfig';
 
 export default (packConfig) => {
