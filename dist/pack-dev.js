@@ -46,6 +46,8 @@ var _mergeConfig2 = _interopRequireDefault(_mergeConfig);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+process.env.NODE_ENV = 'development';
+
 var app = (0, _express2.default)();
 
 var context = (0, _path3.getContext)();

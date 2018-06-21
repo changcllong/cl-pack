@@ -14,10 +14,6 @@ var _util = require('util');
 
 var _fs = require('fs');
 
-var _cleanWebpackPlugin = require('clean-webpack-plugin');
-
-var _cleanWebpackPlugin2 = _interopRequireDefault(_cleanWebpackPlugin);
-
 var _htmlWebpackPlugin = require('html-webpack-plugin');
 
 var _htmlWebpackPlugin2 = _interopRequireDefault(_htmlWebpackPlugin);
@@ -42,7 +38,8 @@ exports.default = function (packConfig) {
         commonChunks = packConfig.commonChunks,
         runtimeChunk = packConfig.runtimeChunk,
         html = packConfig.html,
-        stylelint = packConfig.stylelint;
+        stylelint = packConfig.stylelint,
+        visualizer = packConfig.visualizer;
 
 
     var webpackConfig = {
@@ -90,7 +87,9 @@ exports.default = function (packConfig) {
         }
     };
 
-    webpackConfig.plugins = [new _cleanWebpackPlugin2.default([_path3.default.resolve(CONTEXT, _path)], { verbose: false })];
+    webpackConfig.plugins = [
+        // new CleanWebpackPlugin([ _path], { root: CONTEXT, verbose: false })
+    ];
 
     if (stylelint) {
         var stylelintOptions = _extends({
@@ -103,13 +102,19 @@ exports.default = function (packConfig) {
         webpackConfig.plugins.push(new _stylelintWebpackPlugin2.default(stylelintOptions));
     }
 
-    Object.keys(html).forEach(function (name) {
-        webpackConfig.plugins.push(new _htmlWebpackPlugin2.default({
-            filename: name + '.html',
-            template: html[name].template,
-            chunks: html[name].chunks
-        }));
-    });
+    if ((0, _util.isObject)(html)) {
+        Object.keys(html).forEach(function (name) {
+            webpackConfig.plugins.push(new _htmlWebpackPlugin2.default({
+                filename: name + '.html',
+                template: html[name].template,
+                chunks: html[name].chunks
+            }));
+        });
+    }
+
+    if (visualizer) {
+        webpackConfig.plugins.push(new WebpackVisualizerPlugin());
+    }
 
     return webpackConfig;
 };

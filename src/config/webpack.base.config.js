@@ -1,7 +1,6 @@
 import path from 'path';
 import { isObject } from 'util';
 import { existsSync } from 'fs';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
 import getExistConfigPath from '../util/existConfig';
@@ -17,7 +16,8 @@ export default (packConfig) => {
         commonChunks,
         runtimeChunk,
         html,
-        stylelint
+        stylelint,
+        visualizer
     } = packConfig;
 
     const webpackConfig = {
@@ -66,7 +66,7 @@ export default (packConfig) => {
     };
 
     webpackConfig.plugins = [
-        new CleanWebpackPlugin([path.resolve(CONTEXT, _path)], { verbose: false })
+        // new CleanWebpackPlugin([ _path], { root: CONTEXT, verbose: false })
     ];
 
     if (stylelint) {
@@ -81,13 +81,19 @@ export default (packConfig) => {
         webpackConfig.plugins.push(new StylelintWebpackPlugin(stylelintOptions));
     }
 
-    Object.keys(html).forEach(name => {
-        webpackConfig.plugins.push(new HtmlWebpackPlugin({
-            filename: `${name}.html`,
-            template: html[name].template,
-            chunks: html[name].chunks
-        }));
-    });
+    if (isObject(html)) {
+        Object.keys(html).forEach(name => {
+            webpackConfig.plugins.push(new HtmlWebpackPlugin({
+                filename: `${name}.html`,
+                template: html[name].template,
+                chunks: html[name].chunks
+            }));
+        });
+    }
+
+    if (visualizer) {
+        webpackConfig.plugins.push(new WebpackVisualizerPlugin());
+    }
 
     return webpackConfig;
 };

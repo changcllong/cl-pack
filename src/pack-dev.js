@@ -1,3 +1,5 @@
+'use strict';
+
 import path from 'path';
 import url from 'url';
 import { isObject } from 'util';
@@ -6,6 +8,9 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import httpProxyMiddleware from 'http-proxy-middleware';
+
+process.env.NODE_ENV = 'development';
+
 import getProjectConfig from './util/projectConfig';
 import requireUncached from './util/requireUncached';
 import { getContext } from './util/path';

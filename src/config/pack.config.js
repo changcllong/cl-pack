@@ -46,12 +46,25 @@ export default {
         mock: {
             '^/api0$': {from: 'changcllong', message: 'Hello World'},
             '^/api1$': './mock/data.json'
-        }
+        },
+
+        visualizer: false
     },
 
     prd: {
         filename: '[name]@[chunkhash].js',
         chunkFilename: '[name]@[chunkhash].js',
-        cssFilename: '[name]@[contenthash].css'
+        cssFilename: '[name]@[contenthash].css',
+
+        minimizer: {
+            js: {
+                cache: true,
+                parallel: true,
+                sourceMap: false
+            },
+            css: {}
+        },
+
+        visualizer: false
     }
 };
