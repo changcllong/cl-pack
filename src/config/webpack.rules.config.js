@@ -2,7 +2,7 @@ import { existsSync } from 'fs';
 import { isString, isObject } from 'util';
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import getExistConfigPath from '../util/existConfig';
+import getExistConfigPath from '../util/getExistConfigPath';
 
 export function getJSRule(packConfig, env) {
     const {

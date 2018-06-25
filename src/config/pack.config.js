@@ -3,7 +3,7 @@ import { getContext } from '../util/path';
 export default {
     CONTEXT: getContext(),
     path: './dist',
-    publicPath: 'http://localhost:8080/',
+    publicPath: '',
 
     filename: '[name].js',
     chunkFilename: '[name].js',

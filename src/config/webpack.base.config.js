@@ -4,7 +4,7 @@ import { existsSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
 import WebpackVisualizerPlugin from 'webpack-visualizer-plugin';
-import getExistConfigPath from '../util/existConfig';
+import getExistConfigPath from '../util/getExistConfigPath';
 
 export default (packConfig) => {
     const {
