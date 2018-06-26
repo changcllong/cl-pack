@@ -39,15 +39,14 @@ export default {
         port: 8080,
         hot: true,
         staticPath: './assets',
-        proxy: {
-            // '^/index0$': 'http://localhost:8080/index.html',
-            // '^/index1$': '/index.html'
-        },
 
-        mock: {
-            // '^/api0$': {from: 'changcllong', message: 'Hello World'},
-            // '^/api1$': './mock/data.json'
-        }
+        // '^/index0$': 'http://localhost:8080/index.html',
+        // '^/index1$': '/index.html'
+        proxy: {},
+
+        // '^/api0$': {from: 'changcllong', message: 'Hello World'},
+        // '^/api1$': './mock/data.json'
+        mock: {}
     },
 
     prd: {
