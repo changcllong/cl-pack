@@ -16,7 +16,8 @@
     "packing"
   ],
   "files": [
-    "dist"
+    "dist",
+    "index.js"
   ],
   "bin": {
     "cl-pack": "dist/command.js",
