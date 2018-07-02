@@ -2,7 +2,7 @@
   "name": "cl-pack",
   "version": "0.0.1",
   "description": "A packing tool based on webpack4",
-  "main": "dist/index.js",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist && babel src -d dist"
@@ -35,10 +35,8 @@
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
     "mini-css-extract-plugin": "^0.4.0",
-    "node-sass": "^4.9.0",
     "optimize-css-assets-webpack-plugin": "^4.0.2",
     "ora": "^2.1.0",
-    "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
     "stylelint": "^9.2.0",
     "stylelint-config-standard": "^18.2.0",
@@ -59,8 +57,13 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "node-sass": "^4.9.0",
+    "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "rimraf": "^2.6.2"
+    "react-router": "^4.3.1",
+    "rimraf": "^2.6.2",
+    "sass-loader": "^7.0.1",
+    "webpack-node-externals": "^1.7.2"
   }
 }

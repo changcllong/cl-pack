@@ -12,6 +12,12 @@ export default {
         index: ['./src/index.js']
     },
 
+    resolve: {},
+
+    target: 'web',
+
+    externals: false,
+
     stylelint: {
         files: ['**/*.css', '**/*.less', '**/*.s?(a|c)ss']
     },
@@ -40,12 +46,16 @@ export default {
         hot: true,
         staticPath: './assets',
 
-        // '^/index0$': 'http://localhost:8080/index.html',
-        // '^/index1$': '/index.html'
+        /**
+         * '^/index0$': 'http://localhost:8080/index.html'
+         * '^/index1$': '/index.html'
+         */
         proxy: {},
 
-        // '^/api0$': {from: 'changcllong', message: 'Hello World'},
-        // '^/api1$': './mock/data.json'
+        /**
+         * '^/api0$': {from: 'changcllong', message: 'Hello World'}
+         * '^/api1$': './mock/data.json'
+         */
         mock: {}
     },
 

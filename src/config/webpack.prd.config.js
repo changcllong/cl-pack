@@ -32,7 +32,9 @@ export default (packConfig) => {
         })
     );
 
-    if (minimizer) {
+    if (minimizer === false) {
+        webpackConfig.optimization.minimize = false;
+    } else if (minimizer) {
         const _minimizer = [];
         const {
             js,

@@ -14,6 +14,9 @@ export default (packConfig) => {
         chunkFilename,
         CONTEXT,
         entry,
+        resolve,
+        target,
+        externals,
         commonChunks,
         runtimeChunk,
         html,
@@ -24,12 +27,18 @@ export default (packConfig) => {
     const webpackConfig = {
         context: CONTEXT,
 
-        resolve: {
-            extensions: ['.js', '.jsx'], // 同时支持 js 和 jsx
-        },
+        resolve: resolve,
 
         entry: entry
     };
+
+    if (target) {
+        webpackConfig.target = target;
+    }
+
+    if (externals) {
+        webpackConfig.externals = externals;
+    }
 
     webpackConfig.output = {
         path: path.resolve(CONTEXT, _path),
@@ -82,7 +91,7 @@ export default (packConfig) => {
         webpackConfig.plugins.push(new StylelintWebpackPlugin(stylelintOptions));
     }
 
-    if (isObject(html)) {
+    if (target !== 'node' && isObject(html)) {
         Object.keys(html).forEach(name => {
             webpackConfig.plugins.push(new HtmlWebpackPlugin({
                 filename: `${name}.html`,
