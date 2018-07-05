@@ -5,7 +5,7 @@ export default function merge(configs, env) {
         configs = [configs];
     }
     configs.forEach(config => {
-        if (isObject(config[env])) {
+        if (isObject(config) && isObject(config[env])) {
             Object.keys(config[env]).forEach(key => {
                 config[key] = config[env][key];
             });
@@ -14,9 +14,11 @@ export default function merge(configs, env) {
 
     const _config = {};
     configs.reduce((resultConfig, config) => {
-        Object.keys(config).forEach(key => {
-            resultConfig[key] = config[key];
-        });
+        if (isObject(config)) {
+            Object.keys(config).forEach(key => {
+                resultConfig[key] = config[key];
+            });
+        }
         return resultConfig;
     }, _config);
 

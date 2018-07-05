@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import { isObject, isNumber } from 'util';
+import { isObject, isNumber, isString, isFunction, error } from 'util';
 
 import ora from 'ora';
 import chalk from 'chalk';
@@ -13,28 +13,87 @@ import { getPackConfig, getWebpackConfig } from './util/getProjectConfig';
 import requireUncached from './util/requireUncached';
 import { getContext } from './util/path';
 
+const ORIGIN_PACK_CONFIG = Symbol('CLPack/originPackConfig');
 const PACK_CONFIG = Symbol('CLPack/packConfig');
-const CREATE_PACK_CONFIG = Symbol('CLPack/createPackConfig');
+const WEBPACK_CONFIG = Symbol('CLPack/webpackConfig');
+const ENV = Symbol('CLPack/env');
+
+const ENV_NAME = {
+    PRD: 'prd',
+    DEV: 'dev'
+};
+
+const isEnvName = (function() {
+    const set = new Set();
+    Object.keys(ENV_NAME).forEach(key => {
+        set.add(ENV_NAME[key]);
+    });
+    return function(name) {
+        return set.has(name);
+    }
+})();
 
 export default class CLPack {
     constructor(packConfig) {
-        this[PACK_CONFIG] = packConfig;
-        this[CREATE_PACK_CONFIG] = function(env) {
-            this[PACK_CONFIG] =  getPackConfig(env, this[PACK_CONFIG]);
+        this[ORIGIN_PACK_CONFIG] = packConfig;
+        this[PACK_CONFIG] = {};
+        this[WEBPACK_CONFIG] = {};
+        this[ENV] = undefined;
+    }
+
+    useDev(){
+        this[ENV] = ENV_NAME.DEV;
+        return this;
+    }
+
+    usePrd(){
+        this[ENV] = ENV_NAME.PRD;
+        return this;
+    }
+
+    getPackConfig(env, packConfig) {
+        if (!isString(env) && packConfig === undefined) {
+            packConfig = env;
+            env = undefined;
         }
+        if (!isEnvName(env)) {
+            env = this[ENV] || ENV_NAME.PRD;
+        }
+        this[ENV] = env;
+        if (isObject(packConfig) || isFunction(packConfig)) {
+            packConfig = [ this[ORIGIN_PACK_CONFIG], packConfig ];
+        } else {
+            packConfig = this[ORIGIN_PACK_CONFIG];
+        }
+        this[PACK_CONFIG] =  getPackConfig(this[ENV], packConfig);
+        return this[PACK_CONFIG];
     }
 
-    createWebpackConfig(env, webpackConfig) {
-        this[CREATE_PACK_CONFIG](env);
-        return getWebpackConfig(env, this[PACK_CONFIG], webpackConfig);
+    getWebpackConfig(env, webpackConfig) {
+        if (!isString(env) && webpackConfig === undefined) {
+            webpackConfig = env;
+            env = undefined;
+        }
+        this.getPackConfig(env);
+        this[WEBPACK_CONFIG] = getWebpackConfig(this[ENV], this[PACK_CONFIG], webpackConfig);
+        return this[WEBPACK_CONFIG];
     }
 
-    build(webpackConfig) {
+    build(webpackConfig, callback) {
         const spinner = ora('building for production...');
         spinner.start();
-        webpack(this.createWebpackConfig('prd', webpackConfig), (err, stats) => {
+        webpack(this.getWebpackConfig(ENV_NAME.PRD, webpackConfig), (err, stats) => {
             spinner.stop();
-            if (err) throw err;
+            if (err) {
+                console.log(chalk.red('  Build failed with errors.\n'));
+                console.log(chalk.red(err.stack || err));
+                if (err.details) {
+                    console.log(chalk.red(err.details));
+                }
+                callback && callback(err, stats);
+                return;
+            }
+            
             process.stdout.write(stats.toString({
               colors: true,
               modules: false,
@@ -45,7 +104,8 @@ export default class CLPack {
 
             if (stats.hasErrors()) {
               console.log(chalk.red('  Build failed with errors.\n'));
-              process.exit(1);
+              callback && callback(err, stats);
+              return;
             }
 
             console.log(chalk.cyan('  Build complete.\n'));
@@ -53,11 +113,12 @@ export default class CLPack {
               '  Tip: built files are meant to be served over an HTTP server or node env.\n' +
               '  Opening index.html over file:// won\'t work.\n'
             ));
+            callback && callback(err, stats);
         });
     }
 
     server(webpackConfig, program) {
-        webpackConfig = this.createWebpackConfig('dev', webpackConfig);
+        webpackConfig = this.getWebpackConfig(ENV_NAME.DEV, webpackConfig);
         const app = express();
         const context = getContext();
         const {

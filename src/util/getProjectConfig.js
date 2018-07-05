@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import path from 'path';
-import { isFunction, isObject } from 'util';
+import { isFunction, isObject, isArray } from 'util';
 import webpackMerge from 'webpack-merge';
 import { getContext } from './path';
 import merge from './mergePackConfig';
@@ -22,13 +22,26 @@ export function getPackConfig(env, packConfig) {
     let defaultConfig = require('../config/pack.config');
     defaultConfig = defaultConfig.default || defaultConfig;
 
-    if (isFunction(packConfig)) {
-        packConfig = merge(packConfig(defaultConfig), env);
-    } else if (isObject(packConfig)) {
-        packConfig = merge([defaultConfig, packConfig], env);
-    } else {
-        packConfig = merge(defaultConfig, env);
+    if (!isArray(packConfig)) {
+        packConfig = [ packConfig ];
     }
+    packConfig = packConfig.map(config => {
+        if (isFunction(config)) {
+            return config(defaultConfig);
+        } else if (isObject(config)) {
+            return config;
+        }
+        return null;
+    });
+    packConfig = merge([defaultConfig, ...packConfig], env);
+
+    // if (isFunction(packConfig)) {
+    //     packConfig = merge(packConfig(defaultConfig), env);
+    // } else if (isObject(packConfig)) {
+    //     packConfig = merge([defaultConfig, packConfig], env);
+    // } else {
+    //     packConfig = merge(defaultConfig, env);
+    // }
 
     return packConfig;
 }

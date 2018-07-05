@@ -12,6 +12,8 @@ export default (packConfig) => {
         publicPath,
         filename,
         chunkFilename,
+        library,
+        libraryTarget,
         CONTEXT,
         entry,
         resolve,
@@ -46,6 +48,14 @@ export default (packConfig) => {
         filename,
         chunkFilename
     };
+
+    if (library) {
+        webpackConfig.output.library = library;
+    }
+
+    if (libraryTarget) {
+        webpackConfig.output.libraryTarget = libraryTarget;
+    }
 
     const cacheGroups = {};
 

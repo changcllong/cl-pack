@@ -7,6 +7,8 @@ export default {
 
     filename: '[name].js',
     chunkFilename: '[name].js',
+    library: '',
+    libraryTarget: '',
 
     entry: {
         index: ['./src/index.js']
@@ -45,6 +47,12 @@ export default {
         port: 8080,
         hot: true,
         staticPath: './assets',
+
+        hotClientJS: {
+            path: '/__webpack_hmr',
+            timeout: 10000,
+            reload: true,
+        },
 
         /**
          * '^/index0$': 'http://localhost:8080/index.html'
