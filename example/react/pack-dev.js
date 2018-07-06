@@ -6,5 +6,3 @@ const packConfig = require('./config/pack.config');
 const pack = new CLPack(packConfig);
 
 pack.server();
-
-console.log(pack.getPackConfig());

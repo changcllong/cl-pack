@@ -20,7 +20,7 @@ export default function getProjectConfig(configName) {
 
 export function getPackConfig(env, packConfig) {
     let defaultConfig = require('../config/pack.config');
-    defaultConfig = defaultConfig.default || defaultConfig;
+    defaultConfig = {...defaultConfig.default || defaultConfig};
 
     if (!isArray(packConfig)) {
         packConfig = [ packConfig ];

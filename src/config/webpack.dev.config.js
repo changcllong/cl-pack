@@ -4,16 +4,18 @@ import webpackBaseConfig from './webpack.base.config';
 import getRules from './webpack.rules.config';
 
 function addHotClientJS(entry, clientJS) {
+    let _entry;
     if (isString(entry)) {
-        entry = [clientJS, entry];
+        _entry = [ clientJS, entry ];
     } else if (Array.isArray(entry)) {
-        entry.unshift(clientJS);
+        _entry = [ clientJS ].concat(entry);
     } else if (isObject(entry)) {
+        _entry = {};
         Object.keys(entry).forEach(key => {
-            entry[key] = addHotClientJS(entry[key], clientJS);
-        })
+            _entry[key] = addHotClientJS(entry[key], clientJS);
+        });
     }
-    return entry;
+    return _entry;
 }
 
 function getClientJS(hotClientJS) {
@@ -56,7 +58,7 @@ export default (packConfig) => {
 
     if (hot) {
         const clientJS = getClientJS(hotClientJS); // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=10000&reload=true';
-        addHotClientJS(webpackConfig.entry, clientJS);
+        webpackConfig.entry = addHotClientJS(webpackConfig.entry, clientJS);
 
         webpackConfig.plugins.push(
             new webpack.HotModuleReplacementPlugin()

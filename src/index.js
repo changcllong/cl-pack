@@ -117,6 +117,42 @@ export default class CLPack {
         });
     }
 
+    watch(webpackConfig, options, callback) {
+        const spinner = ora('building for production...');
+        spinner.start();
+        webpack(this.getWebpackConfig(ENV_NAME.PRD, webpackConfig)).watch({...options || {}}, (err, stats) => {
+            if (err) {
+                console.log(chalk.red('  Build failed with errors.\n'));
+                console.log(chalk.red(err.stack || err));
+                if (err.details) {
+                    console.log(chalk.red(err.details));
+                }
+                spinner.stop();
+                callback && callback(err, stats);
+                return;
+            }
+            
+            process.stdout.write(stats.toString({
+                colors: true,
+                modules: false,
+                children: false,
+                chunks: false,
+                chunkModules: false
+            }) + '\n\n');
+
+            if (stats.hasErrors()) {
+                console.log(chalk.red('  Build failed with errors.\n'));
+                spinner.stop();
+                callback && callback(err, stats);
+                return;
+            }
+
+            console.log(chalk.cyan('  Build complete.\n'));
+            spinner.info('pack in watch mode...');
+            callback && callback(err, stats);
+        });
+    }
+
     server(webpackConfig, program) {
         webpackConfig = this.getWebpackConfig(ENV_NAME.DEV, webpackConfig);
         const app = express();
