@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import { isObject, isNumber, isString, isFunction, error } from 'util';
+import { isObject, isString, isFunction } from 'util';
 
 import ora from 'ora';
 import chalk from 'chalk';
@@ -51,6 +51,11 @@ export default class CLPack {
         return this;
     }
 
+    /**
+     * 根据项目配置和框架默认配置生成完整的配置对象
+     * @param {string} env 当前环境'prd'or'dev'
+     * @param {Object|Function} packConfig 项目配置
+     */
     getPackConfig(env, packConfig) {
         if (!isString(env) && packConfig === undefined) {
             packConfig = env;
@@ -69,6 +74,11 @@ export default class CLPack {
         return this[PACK_CONFIG];
     }
 
+    /**
+     * 生成最终的webpack配置
+     * @param {string} env 当前环境'prd'or'dev'
+     * @param {Function} webpackConfig 项目提供的webpack配置
+     */
     getWebpackConfig(env, webpackConfig) {
         if (!isString(env) && webpackConfig === undefined) {
             webpackConfig = env;
@@ -117,6 +127,12 @@ export default class CLPack {
         });
     }
 
+    /**
+     * 类似build，但使用watch模式，可监听文件修改重新打包
+     * @param {*} webpackConfig 项目提供的webpack配置
+     * @param {*} options watch选项
+     * @param {*} callback 每一次打包后的回调
+     */
     watch(webpackConfig, options, callback) {
         const spinner = ora('building for production...');
         spinner.start();
@@ -161,7 +177,6 @@ export default class CLPack {
             port,
             hot,
             staticPath,
-            mockPath,
             proxy,
             mock
         } = this[PACK_CONFIG];
@@ -188,6 +203,7 @@ export default class CLPack {
             }
         });
 
+        // 代理与url重写中间件
         function proxyMiddleware(req, res, next) {
             const rules = [];
             if (isObject(proxy)) {
@@ -232,6 +248,7 @@ export default class CLPack {
 
         app.use(proxyMiddleware);
 
+        // mock数据中间件
         function mockMiddleware(req, res, next) {
 
             function existMockData(from) {

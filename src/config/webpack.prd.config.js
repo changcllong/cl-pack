@@ -1,11 +1,9 @@
-import { isString, isObject } from 'util';
-import webpack from 'webpack';
+import { isObject } from 'util';
 import WebpackMd5Hash from 'webpack-md5-hash';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
-import WebpackVisualizerPlugin from 'webpack-visualizer-plugin';
 import webpackBaseConfig from './webpack.base.config';
 import getRules from './webpack.rules.config';
 

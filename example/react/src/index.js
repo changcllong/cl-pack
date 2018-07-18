@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Test from './component/test';
 import './index.scss';

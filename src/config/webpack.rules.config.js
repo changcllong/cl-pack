@@ -4,7 +4,7 @@ import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import getExistConfigPath from '../util/getExistConfigPath';
 
-export function getJSRule(packConfig, env) {
+export function getJSRule(packConfig) {
     const {
         eslint
     } = packConfig;

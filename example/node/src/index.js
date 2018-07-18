@@ -36,6 +36,11 @@ Index.childContextTypes = {
   list: PropTypes.array
 };
 
+Index.propTypes = {
+  locals: PropTypes.object,
+  url: PropTypes.string
+};
+
 const html = ReactDOMServer.renderToString(React.createElement(Index, { url: '/', locals: { list: [ 0, 1 ] }}));
 
 fs.writeFileSync('../output.html', html, { encoding: 'utf8' });

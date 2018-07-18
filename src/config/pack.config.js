@@ -26,10 +26,12 @@ export default {
 
     eslint: false,
 
+    // 用于配置file-loader
     assets: {
         'jpg|jpeg|png|gif|mp3|ttf|woff|woff2|eot|svg': {}
     },
 
+    // 用于配置HtmlWebpackPlugin
     html: {
         index: {
             template: 'template/index.html'
@@ -54,6 +56,8 @@ export default {
             reload: true,
         },
 
+        devtool: 'eval-source-map',
+
         /**
          * '^/index0$': 'http://localhost:8080/index.html'
          * '^/index1$': '/index.html'
@@ -72,12 +76,15 @@ export default {
         chunkFilename: '[name]@[chunkhash].js',
         cssFilename: '[name]@[contenthash].css',
 
+        // js、css压缩配置
         minimizer: {
+            // 配置UglifyJsPlugin
             js: {
                 cache: true,
                 parallel: true,
                 sourceMap: false
             },
+            // 配置optimize-css-assets-webpack-plugin
             css: {}
         }
     }

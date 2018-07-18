@@ -19,6 +19,7 @@ export default (packConfig) => {
         resolve,
         target,
         externals,
+        devtool,
         commonChunks,
         runtimeChunk,
         html,
@@ -70,8 +71,6 @@ export default (packConfig) => {
         }
     });
 
-    webpackConfig.module = {};
-
     webpackConfig.optimization = {
         runtimeChunk: runtimeChunk,
         splitChunks: {
@@ -84,6 +83,12 @@ export default (packConfig) => {
             cacheGroups: cacheGroups
         }
     };
+
+    if (devtool) {
+        webpackConfig.devtool = devtool;
+    }
+
+    webpackConfig.module = {};
 
     webpackConfig.plugins = [
         // new CleanWebpackPlugin([ _path], { root: CONTEXT, verbose: false })
