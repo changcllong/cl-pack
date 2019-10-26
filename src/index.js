@@ -1,7 +1,6 @@
 import path from 'path';
 import url from 'url';
 import { isObject, isString, isFunction } from 'util';
-
 import ora from 'ora';
 import chalk from 'chalk';
 import webpack from 'webpack';
@@ -41,12 +40,12 @@ export default class CLPack {
         this[ENV] = undefined;
     }
 
-    useDev(){
+    useDev() {
         this[ENV] = ENV_NAME.DEV;
         return this;
     }
 
-    usePrd(){
+    usePrd() {
         this[ENV] = ENV_NAME.PRD;
         return this;
     }
@@ -66,11 +65,11 @@ export default class CLPack {
         }
         this[ENV] = env;
         if (isObject(packConfig) || isFunction(packConfig)) {
-            packConfig = [ this[ORIGIN_PACK_CONFIG], packConfig ];
+            packConfig = [this[ORIGIN_PACK_CONFIG], packConfig];
         } else {
             packConfig = this[ORIGIN_PACK_CONFIG];
         }
-        this[PACK_CONFIG] =  getPackConfig(this[ENV], packConfig);
+        this[PACK_CONFIG] = getPackConfig(this[ENV], packConfig);
         return this[PACK_CONFIG];
     }
 
@@ -103,24 +102,24 @@ export default class CLPack {
                 callback && callback(err, stats);
                 return;
             }
-            
+
             process.stdout.write(stats.toString({
-              colors: true,
-              modules: false,
-              children: false, // if you are using ts-loader, setting this to true will make typescript errors show up during build
-              chunks: false,
-              chunkModules: false
+                colors: true,
+                modules: false,
+                children: false, // if you are using ts-loader, setting this to true will make typescript errors show up during build
+                chunks: false,
+                chunkModules: false
             }) + '\n\n');
 
             if (stats.hasErrors()) {
-              console.log(chalk.red('  Build failed with errors.\n'));
-              callback && callback(err, stats);
-              return;
+                console.log(chalk.red('  Build failed with errors.\n'));
+                callback && callback(err, stats);
+                return;
             }
 
             console.log(chalk.cyan('  Build complete.\n'));
             console.log(chalk.yellow(
-              '  Tip: built files are meant to be served over an HTTP server or node env.\n' +
+                '  Tip: built files are meant to be served over an HTTP server or node env.\n' +
               '  Opening index.html over file:// won\'t work.\n'
             ));
             callback && callback(err, stats);
@@ -136,7 +135,7 @@ export default class CLPack {
     watch(webpackConfig, options, callback) {
         const spinner = ora('building for production...');
         spinner.start();
-        webpack(this.getWebpackConfig(ENV_NAME.PRD, webpackConfig)).watch({...options || {}}, (err, stats) => {
+        webpack(this.getWebpackConfig(ENV_NAME.PRD, webpackConfig)).watch({ ...options || {} }, (err, stats) => {
             if (err) {
                 console.log(chalk.red('  Build failed with errors.\n'));
                 console.log(chalk.red(err.stack || err));
@@ -147,7 +146,7 @@ export default class CLPack {
                 callback && callback(err, stats);
                 return;
             }
-            
+
             process.stdout.write(stats.toString({
                 colors: true,
                 modules: false,
@@ -204,7 +203,7 @@ export default class CLPack {
         });
 
         // 代理与url重写中间件
-        function proxyMiddleware(req, res, next) {
+        function proxyMiddleware (req, res, next) {
             const rules = [];
             if (isObject(proxy)) {
                 Object.keys(proxy).forEach(from => {
@@ -250,7 +249,6 @@ export default class CLPack {
 
         // mock数据中间件
         function mockMiddleware(req, res, next) {
-
             function existMockData(from) {
                 const regFrom = new RegExp(from);
 
@@ -278,7 +276,7 @@ export default class CLPack {
 
         app.use(express.static(path.resolve(context, staticPath)));
 
-        if(program && program.port) {
+        if (program && program.port) {
             app.listen(program.port);
         } else {
             app.listen(port);

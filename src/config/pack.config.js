@@ -53,7 +53,7 @@ export default {
         hotClientJS: {
             path: '/__webpack_hmr',
             timeout: 10000,
-            reload: true,
+            reload: true
         },
 
         devtool: 'eval-source-map',

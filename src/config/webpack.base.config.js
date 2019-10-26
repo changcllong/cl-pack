@@ -3,7 +3,7 @@ import { isObject } from 'util';
 import { existsSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
-import WebpackVisualizerPlugin from 'webpack-visualizer-plugin';
+// import WebpackVisualizerPlugin from 'webpack-visualizer-plugin';
 import getExistConfigPath from '../util/getExistConfigPath';
 
 export default (packConfig) => {
@@ -74,7 +74,7 @@ export default (packConfig) => {
     webpackConfig.optimization = {
         runtimeChunk: runtimeChunk,
         splitChunks: {
-            chunks: "async",
+            chunks: 'async',
             minSize: 50000,
             minChunks: 1,
             maxAsyncRequests: 5,
@@ -97,7 +97,7 @@ export default (packConfig) => {
     if (stylelint) {
         const stylelintOptions = {
             context: path.resolve(CONTEXT, 'src'),
-            ...isObject(stylelint) ? stylelint : {},
+            ...isObject(stylelint) ? stylelint : {}
         };
         if (!(stylelintOptions.configFile && existsSync(stylelintOptions.configFile))) {
             stylelintOptions.configFile = getExistConfigPath('stylelint', CONTEXT) || getExistConfigPath('stylelint', __dirname);
@@ -116,9 +116,9 @@ export default (packConfig) => {
         });
     }
 
-    if (visualizer) {
-        webpackConfig.plugins.push(new WebpackVisualizerPlugin());
-    }
+    // if (visualizer) {
+    //     webpackConfig.plugins.push(new WebpackVisualizerPlugin());
+    // }
 
     return webpackConfig;
 };

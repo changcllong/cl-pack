@@ -10,16 +10,18 @@
         "react"
     ],
     "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 2018,
         "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true,
-            "experimentalObjectRestSpread": true,
             "modules": true
         }
     },
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "semi": "off",
+        "indent": ["error", 4],
+        "space-before-function-paren": "off"
     },
-    "extends": ["eslint:recommended", "plugin:react/recommended"]
+    "extends": ["eslint:recommended", "standard", "plugin:react/recommended"]
 }

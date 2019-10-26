@@ -128,7 +128,6 @@ export function getAssetsRule(packConfig, env) {
 }
 
 export default function getRules(packConfig, env) {
-
     const rules = [
         getJSRule(packConfig, env),
         ...getCSSRule(packConfig, env),

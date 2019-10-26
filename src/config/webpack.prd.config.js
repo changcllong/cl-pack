@@ -20,7 +20,7 @@ export default (packConfig) => {
 
     webpackConfig.module.rules = getRules(packConfig, 'prd');
 
-    webpackConfig.plugins.push(new CleanWebpackPlugin([ _path], { root: CONTEXT, verbose: false }));
+    webpackConfig.plugins.push(new CleanWebpackPlugin([_path], { root: CONTEXT, verbose: false }));
 
     webpackConfig.plugins.push(new WebpackMd5Hash());
 
@@ -45,7 +45,7 @@ export default (packConfig) => {
         if (css) {
             _minimizer.push(new OptimizeCSSAssetsPlugin(isObject(css) ? css : {}));
         }
-    
+
         webpackConfig.optimization.minimizer = _minimizer;
     }
 

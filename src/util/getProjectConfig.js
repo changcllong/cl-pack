@@ -49,7 +49,7 @@ export function getPackConfig(env, packConfig) {
 export function getWebpackConfig(env, packConfig, customWebpackConfig) {
     let webpackConfig = env === 'dev' ? require('../config/webpack.dev.config') : require('../config/webpack.prd.config');
     webpackConfig = webpackConfig.default || webpackConfig;
-    if (isFunction(webpackConfig)){
+    if (isFunction(webpackConfig)) {
         webpackConfig = webpackConfig(packConfig);
     }
 

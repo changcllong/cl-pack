@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable import/first */
+
 process.env.NODE_ENV = 'production';
 
 import getProjectConfig from './util/getProjectConfig';
