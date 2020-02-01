@@ -1,12 +1,11 @@
-import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Test from './component/test';
-import './index.scss';
+import style from './index.scss';
 
 ReactDOM.render(
     (
-        <div>
+        <div id={style.app}>
             <p>REACT EXAMPLE...</p>
             <Test />
         </div>

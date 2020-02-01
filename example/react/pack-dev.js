@@ -1,8 +1,22 @@
-let CLPack = require('../../dist/index');
-CLPack = CLPack.default || CLPack;
+const { server } = require('../../dist/index');
 
-const packConfig = require('./config/pack.config');
+server({
+    entry: {
+        index: './src/index.js'
+    },
 
-const pack = new CLPack(packConfig);
+    css: {
+        extractCss: true,
+        modules: true
+    },
 
-pack.server();
+    commonChunks: {
+        vendor: ['node_modules']
+    },
+
+    dev: {
+        options: {
+            writeToDisk: true
+        }
+    }
+});
