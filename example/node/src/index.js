@@ -7,40 +7,40 @@ import Test from './test';
 const fs = require('fs');
 
 const PlaceHolder = () => {
-  return (<p>HELLO SSR!!</p>);
+    return (<p>HELLO SSR!!</p>);
 }
 
 export default class Index extends Component {
-  getChildContext() {
-    return { list: this.props.locals.list };
-  }
+    getChildContext() {
+        return { list: this.props.locals.list };
+    }
 
-  render() {
-    const {
-      url
-    } = this.props;
-    return (
-      <div>
-        <StaticRouter location={url} context={{}}>
-          <section>
-            <Route exact path="/" component={Test}/>
-            <Route path="/tip" component={PlaceHolder}/>
-          </section>
-        </StaticRouter>
-      </div>
-    );
-  }
+    render() {
+        const {
+            url
+        } = this.props;
+        return (
+            <div>
+                <StaticRouter location={url} context={{}}>
+                    <section>
+                        <Route exact path="/" component={Test}/>
+                        <Route path="/tip" component={PlaceHolder}/>
+                    </section>
+                </StaticRouter>
+            </div>
+        );
+    }
 }
 
 Index.childContextTypes = {
-  list: PropTypes.array
+    list: PropTypes.array
 };
 
 Index.propTypes = {
-  locals: PropTypes.object,
-  url: PropTypes.string
+    locals: PropTypes.object,
+    url: PropTypes.string
 };
 
-const html = ReactDOMServer.renderToString(React.createElement(Index, { url: '/', locals: { list: [ 0, 1 ] }}));
+const html = ReactDOMServer.renderToString(React.createElement(Index, { url: '/', locals: { list: [0, 1] } }));
 
 fs.writeFileSync('../output.html', html, { encoding: 'utf8' });

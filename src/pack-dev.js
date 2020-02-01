@@ -8,14 +8,10 @@ import program from 'commander';
 
 program
     .option('-p, --port <port>', 'server listen port')
+    .option('-c, --config <path>', 'cl-pack config file path')
     .parse(process.argv);
 
-import getProjectConfig from './util/getProjectConfig';
-import CLPack from './index';
+import getConfigFromPath from './utils/getConfigFromPath';
+import { server } from './index';
 
-const packConfig = getProjectConfig('pack.config.js');
-const webpackConfig = getProjectConfig('webpack.dev.config.js');
-
-const pack = new CLPack(packConfig);
-
-pack.server(webpackConfig, program);
+server(program.config ? getConfigFromPath(program.config) : undefined, program);

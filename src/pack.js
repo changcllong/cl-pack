@@ -4,12 +4,13 @@
 
 process.env.NODE_ENV = 'production';
 
-import getProjectConfig from './util/getProjectConfig';
-import CLPack from './index';
+import program from 'commander';
 
-const packConfig = getProjectConfig('pack.config.js');
-const webpackConfig = getProjectConfig('webpack.prd.config.js');
+program
+    .option('-c, --config <path>', 'cl-pack config file path')
+    .parse(process.argv);
 
-const pack = new CLPack(packConfig);
+import getConfigFromPath from './utils/getConfigFromPath';
+import { build } from './index';
 
-pack.build(webpackConfig);
+build(program.config ? getConfigFromPath(program.config) : undefined);

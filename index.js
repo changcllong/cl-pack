@@ -3,4 +3,5 @@
 var CLPack = require('./dist');
 CLPack = CLPack.default || CLPack;
 
-module.exports = CLPack;
+exports.build = CLPack.build;
+exports.server = CLPack.server;
