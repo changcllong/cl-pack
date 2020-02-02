@@ -19,6 +19,7 @@ import { getJSRules, getCSSRules, getAssetsRules } from './configs/webpack.rules
 import mergePackConfig from './utils/mergePackConfig';
 import mergeWebpackConfig from './utils/mergeWebpackConfig';
 import requireUncached from './utils/requireUncached';
+import hotWebpackConfig from './utils/hot';
 
 const webpackMode = [
     'development',
@@ -118,35 +119,53 @@ const build = (userPackConfig, callback) => {
     }
 };
 
-const startDevServer = (packConfig, webpackConfig, program) => {
+const startDevServer = async (packConfig, webpackConfig, program) => {
     const app = express();
     const { context, dev } = packConfig
     const {
         options,
         port,
         hot,
+        hotClientJS,
         staticPath,
         proxy,
         mock
     } = dev;
-    const complier = webpack(webpackConfig);
+
+    if (hot && hotClientJS) {
+        hotWebpackConfig(hotClientJS, webpackConfig)
+    }
 
     const webpackDevOptions = {
         publicPath: webpackConfig.output.publicPath,
         ...options
     }
 
-    const devMiddleware = webpackDevMiddleware(complier, webpackDevOptions);
+    // if (isObject(dll)) {
+    //     await new Promise((resolve) => {
+    //         const dllDevMiddleware = webpackDevMiddleware(webpack(dll), { ...webpackDevOptions, writeToDisk: true });
+    //         dllDevMiddleware.waitUntilValid(() => {
+    //             app.use(dllDevMiddleware);
+    //             resolve();
+    //         });
+    //     });
+    // }
 
-    devMiddleware.waitUntilValid(() => {
-        app.use(devMiddleware);
-        if (hot) {
-            app.use(webpackHotMiddleware(complier));
-        }
+    await new Promise((resolve) => {
+        const compiler = webpack(webpackConfig);
+        const devMiddleware = webpackDevMiddleware(compiler, webpackDevOptions);
+
+        devMiddleware.waitUntilValid(() => {
+            app.use(devMiddleware);
+            if (hot) {
+                app.use(webpackHotMiddleware(compiler));
+            }
+            resolve();
+        });
     });
 
     // 代理与url重写中间件
-    function proxyMiddleware (req, res, next) {
+    function proxyMiddleware(req, res, next) {
         const rules = [];
         if (isObject(proxy)) {
             Object.keys(proxy).forEach(from => {
@@ -159,7 +178,9 @@ const startDevServer = (packConfig, webpackConfig, program) => {
             next();
         }
 
-        if (rules.length > 0 && !rules.some(rule => {
+        if (rules.length === 0) {
+            next();
+        } else if (!rules.some(rule => {
             const from = new RegExp(rule.from);
 
             if (from.test(req.url)) {
@@ -226,23 +247,27 @@ const startDevServer = (packConfig, webpackConfig, program) => {
 
 const server = (userPackConfig, program) => {
     const packConfig = mergePackConfig(defaultPackConfig, userPackConfig);
-    const webpackConfig = getWebpackConfig(packConfig);
     const { dll } = packConfig;
 
-    if (webpackMode.indexOf(webpackConfig.mode) < 0) {
-        webpackConfig.mode = 'development';
-    }
+    const packUserCode = () => {
+        const webpackConfig = getWebpackConfig(packConfig);
 
-    console.log('server webpackConfig', webpackConfig.optimization.splitChunks);
+        if (webpackMode.indexOf(webpackConfig.mode) < 0) {
+            webpackConfig.mode = 'development';
+        }
+        startDevServer(packConfig, webpackConfig, program);
+    }
 
     if (isObject(dll)) {
         pack(dll)
             .then(() => {
-                startDevServer(packConfig, webpackConfig, program);
+                packUserCode();
             })
-            .catch(() => {});
+            .catch(error => {
+                console.error(error);
+            });
     } else {
-        startDevServer(packConfig, webpackConfig, program);
+        packUserCode();
     }
 };
 

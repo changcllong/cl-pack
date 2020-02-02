@@ -4,7 +4,7 @@ export default class Test extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list: [0, 1, 2, 3, 4]
+            list: [0, 1, 2, 3, 4, 5]
         }
     }
 

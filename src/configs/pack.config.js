@@ -65,7 +65,7 @@ export default {
     dev: {
         port: 8080,
 
-        staticPath: './assets',
+        staticPath: '',
 
         hot: true,
 

@@ -1,5 +1,6 @@
 import path from 'path';
 import { isObject } from 'lodash';
+// import webpack from 'webpack';
 // import { existsSync } from 'fs';
 // import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
@@ -36,7 +37,7 @@ export default (packConfig) => {
 
     webpackConfig.output = {
         path: path.resolve(context, 'dist'),
-        publicPath: '',
+        publicPath: '/',
         filename: hash ? '[name]@[chunkhash].js' : '[name].js',
         chunkFilename: hash ? '[name]@[chunkhash].js' : '[name].js'
     };
@@ -122,6 +123,12 @@ export default (packConfig) => {
             filename: hash ? '[name]@[contenthash].css' : '[name].css'
         }))
     }
+
+    // if (dll) {
+    //     webpackConfig.plugins.push(new webpack.DllReferencePlugin({
+    //         manifest: require(path.resolve(context, './dist/vendor-manifest.json'))
+    //     }))
+    // }
 
     // if (target !== 'node' && isObject(html)) {
     //     Object.keys(html).forEach(name => {

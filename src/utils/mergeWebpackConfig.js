@@ -22,7 +22,8 @@ export default (defaultConfig = {}, userConfig = {}) => {
                     'MiniCssExtractPlugin',
                     'StylelintWebpackPlugin',
                     'OptimizeCSSAssetsPlugin',
-                    'UglifyJsPlugin'
+                    'UglifyJsPlugin',
+                    'HotModuleReplacementPlugin'
                 ],
                 plugin => plugin.constructor && plugin.constructor.name
             )
