@@ -19,12 +19,8 @@ function addHotClientJS(entry, clientJS) {
 
 function getClientJS(hotClientJS) {
     let clientJS = 'webpack-hot-middleware/client?';
-    let _hotClientJS;
-    if (isObject(hotClientJS)) {
-        _hotClientJS = Object.assign({}, hotClientJS);
-    } else {
-        _hotClientJS = {};
-    }
+    const _hotClientJS = isObject(hotClientJS) ? { ...hotClientJS } : {};
+
     if (!isString(_hotClientJS.path)) {
         _hotClientJS.path = '/__webpack_hmr';
     }

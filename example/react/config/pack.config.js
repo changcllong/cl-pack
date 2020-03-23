@@ -1,11 +1,27 @@
-module.exports = function(config) {
-    config.runtimeChunk = {
-        name: 'manifest'
-    };
+const path = require('path');
 
-    config.commonChunks = {
-        vendor: ['node_modules']
-    };
+module.exports = {
+    entry: {
+        main: './src/index.js'
+    },
 
-    return config;
-};
+    css: {
+        extractCss: true,
+        modules: true
+    },
+
+    minimizer: true,
+
+    hash: true,
+
+    commonChunks: {
+        base: ['node_modules']
+    },
+
+    webpack: {
+        output: {
+            path: path.resolve('./dist'),
+            publicPath: '/'
+        }
+    }
+}

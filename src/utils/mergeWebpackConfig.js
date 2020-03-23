@@ -12,7 +12,7 @@ export default (defaultConfig = {}, userConfig = {}) => {
         });
     }
 
-    let retPlugins = defaultConfig.plugins;
+    let retPlugins = { plugins: defaultConfig.plugins };
     if (userConfig.plugins) {
         retPlugins = merge({
             customizeArray: merge.unique(

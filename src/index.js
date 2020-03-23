@@ -1,7 +1,6 @@
 import path from 'path';
 import url from 'url';
 import { isObject } from 'lodash';
-// import { isString, isFunction } from 'util';
 import ora from 'ora';
 import chalk from 'chalk';
 import webpack from 'webpack';
@@ -9,9 +8,6 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import httpProxyMiddleware from 'http-proxy-middleware';
 import express from 'express';
-// import { getPackConfig, getWebpackConfig } from './util/getProjectConfig';
-// import requireUncached from './util/requireUncached';
-// import { getContext } from './util/path';
 
 import defaultPackConfig from './configs/pack.config';
 import getBaseWebpackConfig from './configs/webpack.base.config';
@@ -72,10 +68,6 @@ const handleWebpackRunRet = (err, stats) => {
     }
 
     console.log(chalk.cyan('  Build complete.\n'));
-    console.log(chalk.yellow(
-        '  Tip: built files are meant to be served over an HTTP server or node env.\n' +
-        '  Opening index.html over file:// won\'t work.\n'
-    ));
     return true;
 }
 
@@ -88,7 +80,7 @@ const pack = (webpackConfig) => {
     });
 }
 
-const build = (userPackConfig, callback) => {
+const build = async (userPackConfig, callback) => {
     const packConfig = mergePackConfig(defaultPackConfig, userPackConfig);
     const webpackConfig = getWebpackConfig(packConfig);
     const { dll } = packConfig;
@@ -105,17 +97,19 @@ const build = (userPackConfig, callback) => {
         callback && callback(err, stats);
     }
 
-    if (isObject(dll)) {
-        pack(dll)
-            .then(
-                () => pack(webpackConfig),
-                err => {
-                    throw err;
-                }
-            )
-            .then(finnalCallback, finnalCallback);
-    } else {
-        pack(webpackConfig).then(finnalCallback, finnalCallback);
+    try {
+        if (isObject(dll)) {
+            await pack(dll);
+            console.log(chalk.cyan('  Build dll complete.\n'));
+        }
+        const ret = await pack(webpackConfig);
+        console.log(chalk.yellow(
+            '  Tip: built files are meant to be served over an HTTP server or node env.\n' +
+            '  Opening index.html over file:// won\'t work.\n'
+        ));
+        finnalCallback(ret);
+    } catch (err) {
+        finnalCallback(err);
     }
 };
 
@@ -141,16 +135,6 @@ const startDevServer = async (packConfig, webpackConfig, program) => {
         ...options
     }
 
-    // if (isObject(dll)) {
-    //     await new Promise((resolve) => {
-    //         const dllDevMiddleware = webpackDevMiddleware(webpack(dll), { ...webpackDevOptions, writeToDisk: true });
-    //         dllDevMiddleware.waitUntilValid(() => {
-    //             app.use(dllDevMiddleware);
-    //             resolve();
-    //         });
-    //     });
-    // }
-
     await new Promise((resolve) => {
         const compiler = webpack(webpackConfig);
         const devMiddleware = webpackDevMiddleware(compiler, webpackDevOptions);
@@ -174,8 +158,6 @@ const startDevServer = async (packConfig, webpackConfig, program) => {
                     to: proxy[from]
                 });
             });
-        } else {
-            next();
         }
 
         if (rules.length === 0) {
@@ -245,9 +227,9 @@ const startDevServer = async (packConfig, webpackConfig, program) => {
     }
 };
 
-const server = (userPackConfig, program) => {
+const server = async (userPackConfig, program) => {
     const packConfig = mergePackConfig(defaultPackConfig, userPackConfig);
-    const { dll } = packConfig;
+    const { dll, dev } = packConfig;
 
     const packUserCode = () => {
         const webpackConfig = getWebpackConfig(packConfig);
@@ -255,19 +237,18 @@ const server = (userPackConfig, program) => {
         if (webpackMode.indexOf(webpackConfig.mode) < 0) {
             webpackConfig.mode = 'development';
         }
-        startDevServer(packConfig, webpackConfig, program);
+        return startDevServer(packConfig, webpackConfig, program);
     }
 
-    if (isObject(dll)) {
-        pack(dll)
-            .then(() => {
-                packUserCode();
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    } else {
-        packUserCode();
+    try {
+        if (isObject(dll)) {
+            await pack(dll);
+            console.log(chalk.cyan('  Build dll complete.\n'));
+        }
+        await packUserCode();
+        console.log(chalk.cyan(` open http://localhost:${(program && program.port) || dev.port} in browser to view result.`))
+    } catch (err) {
+        console.error(err);
     }
 };
 

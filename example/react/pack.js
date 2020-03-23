@@ -1,8 +1,24 @@
-let CLPack = require('../../dist/index');
-CLPack = CLPack.default || CLPack;
+const { build } = require('../../dist/index');
+const path = require('path');
 
-const packConfig = require('./config/pack.config');
+build({
+    entry: {
+        main: './src/index.js'
+    },
 
-const pack = new CLPack(packConfig);
+    css: {
+        extractCss: true,
+        modules: true
+    },
 
-pack.build();
+    commonChunks: {
+        base: ['node_modules']
+    },
+
+    webpack: {
+        output: {
+            path: path.resolve('./dist'),
+            publicPath: '/'
+        }
+    }
+});

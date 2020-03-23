@@ -4,7 +4,9 @@
   "description": "react example",
   "main": "src/index.js",
   "scripts": {
-    "start": "node pack-dev.js"
+    "start": "npm run clean && node ../../dist/pack-dev.js -c ./config/pack.dev.config.js",
+    "build": "npm run clean && node ../../dist/pack.js -c ./config/pack.config.js",
+    "clean": "rm -rf ./dist"
   },
   "author": "cl",
   "license": "ISC",
@@ -17,6 +19,9 @@
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
-    "@babel/preset-react": "^7.8.3"
+    "@babel/preset-react": "^7.8.3",
+    "css-loader": "^3.4.2",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.1.3"
   }
 }

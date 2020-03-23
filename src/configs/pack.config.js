@@ -45,8 +45,11 @@ export default {
 
     css: {
         postcss: false,
+
         modules: false,
+
         extractCss: false,
+
         stylelint: false
     },
 

@@ -1,7 +1,6 @@
 'use strict';
 
-var CLPack = require('./dist');
-CLPack = CLPack.default || CLPack;
+const { build, server } = require('./dist');
 
-exports.build = CLPack.build;
-exports.server = CLPack.server;
+exports.build = build;
+exports.server = server;

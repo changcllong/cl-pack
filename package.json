@@ -1,6 +1,6 @@
 {
   "name": "cl-pack",
-  "version": "0.0.2-3",
+  "version": "0.0.3-beta.0",
   "description": "A packing tool based on webpack4",
   "main": "./dist/index.js",
   "scripts": {
