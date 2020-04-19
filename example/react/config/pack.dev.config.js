@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const MainEntryPlugin = require('./mainEntryPlugin');
 
 module.exports = {
     entry: {
@@ -38,7 +39,8 @@ module.exports = {
         plugins: [
             new webpack.DllReferencePlugin({
                 manifest: path.resolve('./vendor/vendor-manifest.json')
-            })
+            }),
+            new MainEntryPlugin('./src/main.js')
         ]
     },
 

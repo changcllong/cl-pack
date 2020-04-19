@@ -38,7 +38,17 @@ const App = ({ data = [] }) => {
     }, [data]);
 
     return (
-        <LevelSelect data={firstData} />
+        <>
+            <LevelSelect data={firstData} />
+            <ul>
+                {[
+                    <li key={0}>1</li>,
+                    <li key={0}>2</li>,
+                    <li key={0}>3</li>,
+                    <li key={0}>4</li>
+                ]}
+            </ul>
+        </>
     )
 }
 
